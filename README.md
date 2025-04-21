@@ -129,5 +129,11 @@ EOF
 - `--output, -o`: The output file. If not specified, the script will print to stdout.
 - `--data-file`: The JSON data file to use for template rendering.
 
+## Roadmap
+
+- Add support for TOML files
+- Add support to input multiple multiple data files
+- Find out how to disable Tera strict mode
+
 ## known issues
 - Tera throws error when variables are not found in the context.

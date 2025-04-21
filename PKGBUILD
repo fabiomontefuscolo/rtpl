@@ -12,7 +12,7 @@ source=()
 
 prepare() {
   cd "${startdir}"
-  cargo fetch --locked
+  make prepare
 }
 
 build() {

@@ -19,13 +19,13 @@ build() {
   cd "${startdir}"
   export RUSTUP_TOOLCHAIN=stable
   export CARGO_TARGET_DIR=target
-  cargo build --release
+  make build
 }
 
 check() {
   cd "${startdir}"
   export RUSTUP_TOOLCHAIN=stable
-  cargo test --release
+  make test
 }
 
 package() {

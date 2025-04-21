@@ -7,7 +7,7 @@ arch=('x86_64')
 url="https://github.com/fabiomontefuscolo/rtpl"
 license=('MIT')
 depends=('gcc-libs')
-makedepends=('rust' 'cargo')
+makedepends=('make' 'rust' 'cargo')
 source=()
 
 prepare() {

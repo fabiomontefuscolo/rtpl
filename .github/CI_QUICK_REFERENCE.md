@@ -21,9 +21,11 @@ cargo build --release --locked
 ## 📋 CI Workflow Overview
 
 ```
-Push/PR → Code Quality → Tests → Build → Artifacts
-           ├─ rustfmt      ├─ unit    ├─ Linux x86_64
-           └─ clippy       └─ doc     └─ macOS ARM64
+Push/PR/Tag → Code Quality → Tests → Build → Artifacts
+              ├─ rustfmt      ├─ unit    ├─ Linux x86_64
+              └─ clippy       └─ doc     └─ macOS ARM64
+
+Note: Binaries stripped only on tags (e.g., v1.0.0)
 ```
 
 ## ✅ Status Badge
@@ -50,8 +52,10 @@ cargo update
 ## 📦 Build Artifacts
 
 After CI runs, download from Actions → Workflow Run → Artifacts:
-- `rtpl-linux-x86_64.zip`
-- `rtpl-macos-aarch64.zip`
+- `rtpl-linux-x86_64.zip` (~7.6 MB with symbols, ~6.7 MB stripped)
+- `rtpl-macos-aarch64.zip` (~7.6 MB with symbols, ~6.7 MB stripped)
+
+**Note:** Main branch builds include debug symbols. Tagged releases are stripped.
 
 Extract and run:
 ```bash
@@ -74,6 +78,7 @@ unzip rtpl-*.zip
 | Clippy warnings | Fix warnings or add `#[allow(...)]` |
 | Tests fail | Run `cargo test --verbose` locally |
 | Cache issues | Delete cache in Settings → Actions |
+| Need stripped binary | Create a version tag (e.g., `v1.0.0`) |
 
 ## 📚 Files
 
@@ -92,6 +97,17 @@ unzip rtpl-*.zip
 ## ⚡ Manual Trigger
 
 Go to: Actions → Quick Build (Makefile) → Run workflow
+
+## 🏷️ Creating a Release
+
+To create a stripped release build:
+
+```bash
+git tag -a v1.0.0 -m "Release version 1.0.0"
+git push origin v1.0.0
+```
+
+This triggers CI with stripped binaries (smaller downloads).
 
 ---
 

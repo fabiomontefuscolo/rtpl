@@ -3,6 +3,8 @@ name: CI
 on:
   push:
     branches: ["main"]
+    tags:
+      - "v*"
   pull_request:
     branches: ["main"]
 
@@ -125,12 +127,12 @@ jobs:
       - name: Build release binary
         run: cargo build --release --locked --target ${{ matrix.platform.target }}
 
-      - name: Strip binary (Linux)
-        if: matrix.platform.os == 'ubuntu-latest'
+      - name: Strip binary (Linux) - Release only
+        if: matrix.platform.os == 'ubuntu-latest' && startsWith(github.ref, 'refs/tags/')
         run: strip target/${{ matrix.platform.target }}/release/rtpl
 
-      - name: Strip binary (macOS)
-        if: matrix.platform.os == 'macos-latest'
+      - name: Strip binary (macOS) - Release only
+        if: matrix.platform.os == 'macos-latest' && startsWith(github.ref, 'refs/tags/')
         run: strip target/${{ matrix.platform.target }}/release/rtpl
 
       - name: Upload artifact

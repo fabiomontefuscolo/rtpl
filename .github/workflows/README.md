@@ -10,7 +10,7 @@ The project uses GitHub Actions for automated testing, code quality checks, and 
 
 ### CI Workflow (`ci.yml`)
 
-**Trigger:** Runs on every push to `main` and on all pull requests.
+**Trigger:** Runs on every push to `main`, on all pull requests, and on version tags (`v*`).
 
 The main CI workflow consists of four jobs:
 
@@ -57,12 +57,16 @@ Creates release binaries for supported platforms:
 
 **Build Process:**
 1. Builds release binary with `--release --locked`
-2. Strips debug symbols to reduce binary size
+2. Strips debug symbols **only for tagged releases** (e.g., `v1.0.0`) to reduce binary size
+   - Development builds (push to `main`) keep symbols for easier debugging
+   - Release builds (tags) strip symbols for smaller downloads
 3. Uploads binary as GitHub Actions artifact (automatically zipped by GitHub)
 
 **Artifacts:**
-- `rtpl-linux-x86_64.zip`
-- `rtpl-macos-aarch64.zip`
+- `rtpl-linux-x86_64.zip` (~7.6 MB with symbols, ~6.7 MB stripped)
+- `rtpl-macos-aarch64.zip` (~7.6 MB with symbols, ~6.7 MB stripped)
+
+**Note:** Artifacts from `main` branch builds include debug symbols. Artifacts from tagged releases are stripped.
 
 #### 4. Release Check
 
@@ -178,6 +182,18 @@ To add support for additional platforms:
 
 - Ensure you're using `macos-latest` runners which have Apple Silicon
 - The `aarch64-apple-darwin` target is only available on M-series macs
+
+### Creating a Release
+
+To create an official release with stripped binaries:
+
+```bash
+# Tag the release
+git tag -a v1.0.0 -m "Release version 1.0.0"
+git push origin v1.0.0
+```
+
+The workflow will automatically run and produce stripped binaries for the release.
 
 ### Cache Issues
 

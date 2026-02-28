@@ -21,7 +21,8 @@ A comprehensive continuous integration workflow that runs on every push to `main
 3. **Build** - Multi-platform matrix build
    - **Linux x86_64** (`x86_64-unknown-linux-gnu`) on Ubuntu
    - **macOS Apple Silicon** (`aarch64-apple-darwin`) on macOS (M1/M2/M3)
-   - Produces stripped, optimized release binaries
+   - Produces optimized release binaries
+   - Strips debug symbols **only for tagged releases** (e.g., `v1.0.0`)
    - Uploads artifacts (automatically zipped by GitHub)
 
 4. **Release Check** - Runs on `main` branch pushes only
@@ -55,8 +56,10 @@ All workflows use intelligent caching to speed up builds:
 
 ### Artifacts
 Build artifacts are automatically uploaded and available for 90 days:
-- `rtpl-linux-x86_64.zip` - Linux binary (zipped by GitHub)
-- `rtpl-macos-aarch64.zip` - macOS Apple Silicon binary (zipped by GitHub)
+- `rtpl-linux-x86_64.zip` - Linux binary (~7.6 MB with symbols, ~6.7 MB stripped)
+- `rtpl-macos-aarch64.zip` - macOS Apple Silicon binary (~7.6 MB with symbols, ~6.7 MB stripped)
+
+**Note:** Binaries from `main` branch builds include debug symbols for easier debugging. Tagged releases (e.g., `v1.0.0`) are stripped for smaller downloads.
 
 ### Quality Gates
 - Code must be properly formatted (`cargo fmt`)
@@ -124,8 +127,13 @@ To manually run the quick build workflow:
 
 ### On Push to Main
 - All jobs run
-- Build artifacts uploaded
+- Build artifacts uploaded **with debug symbols** (not stripped)
 - Release check verifies artifact structure
+
+### On Version Tags (e.g., v1.0.0)
+- All jobs run
+- Build artifacts uploaded **stripped** (smaller size)
+- Ready for distribution to end users
 
 ### On Other Branches
 - Only runs if you open a PR from that branch
@@ -182,6 +190,18 @@ Check the specific platform's build log in the Actions tab. Common issues:
 - Missing dependencies
 - Platform-specific code issues
 - Cargo.lock out of sync (run `cargo update`)
+
+### Creating a Release
+
+To create an official release with stripped binaries:
+
+```bash
+# Create and push a version tag
+git tag -a v1.0.0 -m "Release version 1.0.0"
+git push origin v1.0.0
+```
+
+The workflow will automatically run and produce stripped binaries optimized for distribution.
 
 ### Cache Issues
 

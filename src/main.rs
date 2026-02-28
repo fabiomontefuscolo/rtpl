@@ -1,6 +1,6 @@
 // Copyright (c) 2025 rtpl Contributors
 // SPDX-License-Identifier: MIT
-// 
+//
 mod cli;
 mod data;
 mod template;

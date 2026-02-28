@@ -1,6 +1,6 @@
 // Copyright (c) 2025 rtpl Contributors
 // SPDX-License-Identifier: MIT
-// 
+//
 use anyhow::{anyhow, Result};
 use clap::{Parser, ValueEnum};
 

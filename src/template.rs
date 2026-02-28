@@ -1,6 +1,6 @@
 // Copyright (c) 2025 rtpl Contributors
 // SPDX-License-Identifier: MIT
-// 
+//
 use anyhow::{Context, Result};
 use serde_json::Value;
 use std::fs;
@@ -92,53 +92,53 @@ mod tests {
         let mut temp_file = NamedTempFile::new().unwrap();
         let template_content = "Hello {{ name }}!";
         write!(temp_file, "{}", template_content).unwrap();
-        
+
         let file_path = temp_file.path().to_str().unwrap();
-        
+
         let result = load_template(Some(file_path), false).unwrap();
-        
+
         assert_eq!(result, template_content);
     }
 
     #[test]
     fn test_render_template() {
         let template_content = "Hello {{ name }}!";
-        
+
         let context = json!({
             "name": "World"
         });
-        
+
         let result = render_template(template_content, &context).unwrap();
-        
+
         assert_eq!(result, "Hello World!");
     }
 
     #[test]
     fn test_render_template_with_env() {
         let template_content = "User: {{ _ENV.USER }}";
-        
+
         let context = json!({
             "_ENV": {
                 "USER": "test_user"
             }
         });
-        
+
         let result = render_template(template_content, &context).unwrap();
-        
+
         assert_eq!(result, "User: test_user");
     }
 
     #[test]
     fn test_write_output_to_file() {
         let content = "Test output";
-        
+
         let temp_file = NamedTempFile::new().unwrap();
         let file_path = temp_file.path().to_str().unwrap();
-        
+
         write_output(content, Some(file_path)).unwrap();
-        
+
         let result = fs::read_to_string(file_path).unwrap();
-        
+
         assert_eq!(result, content);
     }
 }

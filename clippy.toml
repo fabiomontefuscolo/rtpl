@@ -1,0 +1,40 @@
+# Clippy configuration for rtpl project
+# See https://doc.rust-lang.org/clippy/configuration.html for all options
+
+# Cognitive complexity threshold for functions
+cognitive-complexity-threshold = 30
+
+# Maximum lines for a function
+too-many-lines-threshold = 100
+
+# Type complexity threshold
+type-complexity-threshold = 250
+
+# Disallowed methods (functions that should not be used)
+# disallowed-methods = []
+
+# Disallowed types
+# disallowed-types = []
+
+# Maximum number of single char bindings
+single-char-binding-names-threshold = 4
+
+# Minimum number of characters in a variable name
+min-ident-chars-threshold = 1
+
+# Allow expect() for better error messages in appropriate places
+allow-expect-in-tests = true
+
+# Allow unwrap() in tests
+allow-unwrap-in-tests = true
+
+# Maximum number of arguments for a function
+too-many-arguments-threshold = 7
+
+# Whether to warn on dbg! macro usage
+# We want to catch these before they make it to production
+warn-on-all-wildcard-imports = false
+
+# Enable pedantic lints by default
+# These can be configured in the CI workflow with:
+# cargo clippy -- -W clippy::pedantic

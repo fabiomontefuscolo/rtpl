@@ -1,0 +1,13 @@
+# Rustfmt configuration for rtpl project
+# Only stable options that work without nightly Rust
+# See https://rust-lang.github.io/rustfmt/ for all options
+
+edition = "2021"
+max_width = 100
+hard_tabs = false
+tab_spaces = 4
+newline_style = "Auto"
+use_small_heuristics = "Default"
+reorder_imports = true
+reorder_modules = true
+remove_nested_parens = true

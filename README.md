@@ -1,5 +1,7 @@
 # RTPL - Render Template
 
+[![CI](https://github.com/fabiomontefuscolo/rtpl/actions/workflows/ci.yml/badge.svg)](https://github.com/fabiomontefuscolo/rtpl/actions/workflows/ci.yml)
+
 A command-line tool for rendering Jinja2 templates with data from various sources. RTPL (Render Template) allows you to combine template files with JSON data and environment variables to generate text output.
 
 ## Purpose
@@ -12,6 +14,10 @@ RTPL simplifies the process of generating configuration files, documents, or any
 - Outputting to files or stdout
 
 ## Installation
+
+### Pre-built Binaries
+
+Pre-built binaries for Linux (x86_64) and macOS (Apple Silicon) are available from the [GitHub Actions artifacts](https://github.com/fabiomontefuscolo/rtpl/actions/workflows/ci.yml). Download the appropriate archive for your platform and extract the `rtpl` binary.
 
 ### From Source
 
@@ -128,6 +134,38 @@ EOF
 - `--stdin`: The input type. It can be `template` or `data`. If not specified, it tries to guess based on other parameters.
 - `--output, -o`: The output file. If not specified, the script will print to stdout.
 - `--data-file`: The JSON data file to use for template rendering.
+
+## Development
+
+### Running Tests
+
+```bash
+cargo test
+```
+
+### Code Quality
+
+The project uses `rustfmt` for code formatting and `clippy` for linting:
+
+```bash
+# Check formatting
+cargo fmt --all -- --check
+
+# Run clippy
+cargo clippy --all-targets --all-features -- -D warnings
+```
+
+### CI/CD
+
+The project uses GitHub Actions for continuous integration:
+
+- **Code Quality**: Runs `rustfmt` and `clippy` checks
+- **Tests**: Runs the full test suite
+- **Builds**: Creates release binaries for:
+  - Linux x86_64 (`x86_64-unknown-linux-gnu`)
+  - macOS Apple Silicon (`aarch64-apple-darwin`)
+
+All workflows run on pushes to `main` and on pull requests.
 
 ## Roadmap
 

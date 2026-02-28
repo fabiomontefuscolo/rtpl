@@ -17,7 +17,14 @@ RTPL simplifies the process of generating configuration files, documents, or any
 
 ### Pre-built Binaries
 
-Pre-built binaries for Linux (x86_64) and macOS (Apple Silicon) are available from the [GitHub Actions artifacts](https://github.com/fabiomontefuscolo/rtpl/actions/workflows/ci.yml). Download the appropriate archive for your platform and extract the `rtpl` binary.
+Pre-built binaries for Linux (x86_64) and macOS (Apple Silicon) are available from the [GitHub Actions artifacts](https://github.com/fabiomontefuscolo/rtpl/actions/workflows/ci.yml). Download the appropriate zip file for your platform and extract the `rtpl` binary.
+
+```bash
+# Extract the binary
+unzip rtpl-linux-x86_64.zip    # or rtpl-macos-aarch64.zip
+chmod +x rtpl
+./rtpl --help
+```
 
 ### From Source
 

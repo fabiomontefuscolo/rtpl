@@ -2,9 +2,9 @@ name: CI
 
 on:
   push:
-    branches: [ "main" ]
+    branches: ["main"]
   pull_request:
-    branches: [ "main" ]
+    branches: ["main"]
 
 env:
   CARGO_TERM_COLOR: always
@@ -133,17 +133,11 @@ jobs:
         if: matrix.platform.os == 'macos-latest'
         run: strip target/${{ matrix.platform.target }}/release/rtpl
 
-      - name: Create tarball
-        run: |
-          cd target/${{ matrix.platform.target }}/release
-          tar -czf rtpl-${{ matrix.platform.name }}.tar.gz rtpl
-          mv rtpl-${{ matrix.platform.name }}.tar.gz ../../../
-
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
           name: rtpl-${{ matrix.platform.name }}
-          path: rtpl-${{ matrix.platform.name }}.tar.gz
+          path: target/${{ matrix.platform.target }}/release/rtpl
           if-no-files-found: error
 
   release-check:

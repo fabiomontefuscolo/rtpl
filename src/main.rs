@@ -3,6 +3,7 @@
 //
 mod cli;
 mod data;
+mod filters;
 mod template;
 
 use anyhow::{Context, Result};

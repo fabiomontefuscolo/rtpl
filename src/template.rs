@@ -7,6 +7,8 @@ use std::fs;
 use std::io::{self, Read, Write};
 use tera::{Context as TeraContext, Tera};
 
+use crate::filters::register_filters;
+
 pub fn load_template(template_file: Option<&str>, from_stdin: bool) -> Result<String> {
     match (template_file, from_stdin) {
         // file is there and stdin is NOT
@@ -44,6 +46,9 @@ pub fn read_template_from_file(template_file: &str) -> Result<String> {
 
 pub fn render_template(template_content: &str, context: &Value) -> Result<String> {
     let mut tera = Tera::default();
+
+    // Register all custom filters
+    register_filters(&mut tera);
 
     // Register the template with a name
     tera.add_raw_template("template", template_content)

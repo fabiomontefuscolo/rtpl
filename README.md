@@ -93,6 +93,41 @@ Home directory: {{ _ENV['HOME'] }}
 EOF
 ```
 
+### Custom Filters
+
+RTPL includes custom filters that extend Tera's built-in functionality to match Jinja2 behavior:
+
+#### `tojson`
+
+Converts a value to JSON format. By default, produces compact JSON without whitespace. Use the `indent` parameter to pretty-print with indentation:
+
+```bash
+# Compact JSON (default)
+rtpl << EOF
+{
+  "config": {{ settings | tojson }}
+}
+EOF
+```
+
+```bash
+# Pretty-printed JSON with indentation
+rtpl << EOF
+Configuration:
+{{ settings | tojson(indent=2) }}
+EOF
+```
+
+**Example:**
+```bash
+echo '{"name": "app", "version": "1.0", "features": ["a", "b"]}' | \
+rtpl << 'EOF'
+Settings: {{ name | tojson }}
+Details:
+{{ features | tojson(indent=2) }}
+EOF
+```
+
 ## Examples
 
 ### Example 1: Generate a configuration file
@@ -174,11 +209,26 @@ The project uses GitHub Actions for continuous integration:
 
 All workflows run on pushes to `main` and on pull requests.
 
+## Custom Filters
+
+The following custom filters are available in addition to Tera's built-in filters:
+
+- **`tojson`** - Converts a value to JSON format (compact by default, use `indent` parameter for pretty-printing)
+
+This filter provides Jinja2-compatible JSON serialization, matching the behavior of Jinja2's `tojson` filter.
+
+### Adding Custom Filters
+
+Developers can easily add new custom filters to extend RTPL's functionality. All filters are organized in `src/filters.rs` for maintainability.
+
+For detailed instructions on creating custom filters, see [docs/ADDING_FILTERS.md](docs/ADDING_FILTERS.md).
+
 ## Roadmap
 
 - Add support for TOML files
-- Add support to input multiple multiple data files
-- Find out how to disable Tera strict mode
+- Add support to input multiple data files
+- Add more Jinja2-compatible filters as needed
 
-## known issues
-- Tera throws error when variables are not found in the context.
+## Known Issues
+
+- Tera throws error when variables are not found in the context (use `| default(value)` filter as workaround)

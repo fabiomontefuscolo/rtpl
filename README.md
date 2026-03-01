@@ -17,14 +17,25 @@ RTPL simplifies the process of generating configuration files, documents, or any
 
 ### Pre-built Binaries
 
-Pre-built binaries for Linux (x86_64) and macOS (Apple Silicon) are available from the [GitHub Actions artifacts](https://github.com/fabiomontefuscolo/rtpl/actions/workflows/ci.yml). Download the appropriate zip file for your platform and extract the `rtpl` binary.
+Pre-built binaries for Linux (x86_64) and macOS (Apple Silicon) are available.
+
+**Option 1: Download from GitHub Releases (Recommended)**
+
+Official releases are available at: https://github.com/fabiomontefuscolo/rtpl/releases
 
 ```bash
-# Extract the binary
-unzip rtpl-linux-x86_64.zip    # or rtpl-macos-aarch64.zip
+# Download and extract (replace VERSION with the desired version)
+curl -L https://github.com/fabiomontefuscolo/rtpl/releases/download/VERSION/rtpl-VERSION-linux-x86_64.tar.gz | tar -xz
+# or for macOS
+curl -L https://github.com/fabiomontefuscolo/rtpl/releases/download/VERSION/rtpl-VERSION-macos-aarch64.tar.gz | tar -xz
+
 chmod +x rtpl
 ./rtpl --help
 ```
+
+**Option 2: Development Builds**
+
+Development builds from the `main` branch (with debug symbols) are available from [GitHub Actions artifacts](https://github.com/fabiomontefuscolo/rtpl/actions/workflows/ci.yml).
 
 ### From Source
 
@@ -219,9 +230,7 @@ This filter provides Jinja2-compatible JSON serialization, matching the behavior
 
 ### Adding Custom Filters
 
-Developers can easily add new custom filters to extend RTPL's functionality. All filters are organized in `src/filters.rs` for maintainability.
-
-For detailed instructions on creating custom filters, see [docs/ADDING_FILTERS.md](docs/ADDING_FILTERS.md).
+Developers can easily add new custom filters to extend RTPL's functionality. All filters are organized in `src/filters.rs` for maintainability. See the module documentation in `src/filters.rs` for instructions on creating custom filters.
 
 ## Roadmap
 

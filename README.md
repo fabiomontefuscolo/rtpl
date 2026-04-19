@@ -114,29 +114,34 @@ Converts a value to JSON format. By default, produces compact JSON without white
 
 ```bash
 # Compact JSON (default)
-rtpl << EOF
+echo '{"settings": {"host": "localhost", "port": 8080}}' \
+| rtpl --template <(cat << 'EOF'
 {
   "config": {{ settings | tojson }}
 }
 EOF
+)
 ```
 
 ```bash
 # Pretty-printed JSON with indentation
-rtpl << EOF
+echo '{"settings": {"host": "localhost", "port": 8080}}' \
+| rtpl --template <(cat << 'EOF'
 Configuration:
 {{ settings | tojson(indent=2) }}
 EOF
+)
 ```
 
 **Example:**
 ```bash
-echo '{"name": "app", "version": "1.0", "features": ["a", "b"]}' | \
-rtpl << 'EOF'
+echo '{"name": "app", "version": "1.0", "features": ["a", "b"]}' \
+| rtpl --template <(cat << 'EOF'
 Settings: {{ name | tojson }}
 Details:
 {{ features | tojson(indent=2) }}
 EOF
+)
 ```
 
 ## Examples

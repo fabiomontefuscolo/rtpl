@@ -1,8 +1,9 @@
 name: Update Homebrew Formula
 
 on:
-  release:
-    types: [published]
+  push:
+    tags:
+      - 'v[0-9]+.[0-9]+.[0-9]+'
 
 jobs:
   prepare:
@@ -16,7 +17,7 @@ jobs:
       - name: Compute release info
         id: compute
         env:
-          TAG: ${{ github.event.release.tag_name }}
+          TAG: ${{ github.ref_name }}
           REPO: ${{ github.repository }}
         run: |
           URL="https://github.com/${REPO}/archive/refs/tags/${TAG}.tar.gz"

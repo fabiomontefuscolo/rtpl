@@ -1,0 +1,38 @@
+name: Update Homebrew Formula
+
+on:
+  release:
+    types: [published]
+
+jobs:
+  prepare:
+    if: github.server_url == 'https://github.com'
+    runs-on: ubuntu-latest
+    outputs:
+      sha256: ${{ steps.compute.outputs.sha256 }}
+      url: ${{ steps.compute.outputs.url }}
+      version: ${{ steps.compute.outputs.version }}
+    steps:
+      - name: Compute release info
+        id: compute
+        env:
+          TAG: ${{ github.event.release.tag_name }}
+          REPO: ${{ github.repository }}
+        run: |
+          URL="https://github.com/${REPO}/archive/refs/tags/${TAG}.tar.gz"
+          SHA256=$(curl -fsSL "$URL" | sha256sum | cut -d' ' -f1)
+          VERSION="${TAG#v}"
+          echo "url=$URL" >> "$GITHUB_OUTPUT"
+          echo "sha256=$SHA256" >> "$GITHUB_OUTPUT"
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+
+  update-homebrew:
+    needs: prepare
+    uses: fabiomontefuscolo/homebrew-tools/.github/workflows/update-formula.yml@main
+    with:
+      formula: ${{ github.event.repository.name }}
+      version: ${{ needs.prepare.outputs.version }}
+      url: ${{ needs.prepare.outputs.url }}
+      sha256: ${{ needs.prepare.outputs.sha256 }}
+    secrets:
+      tap_token: ${{ secrets.HOMEBREW_TAP_TOKEN }}

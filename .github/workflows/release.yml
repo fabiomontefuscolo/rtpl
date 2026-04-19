@@ -1,0 +1,86 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - "v[0-9]+.[0-9]+.[0-9]+"
+
+permissions:
+  contents: write
+
+env:
+  CARGO_TERM_COLOR: always
+  RUST_BACKTRACE: 1
+
+jobs:
+  build:
+    name: Build - ${{ matrix.platform.os }} (${{ matrix.platform.target }})
+    strategy:
+      fail-fast: false
+      matrix:
+        platform:
+          - os: ubuntu-latest
+            target: x86_64-unknown-linux-gnu
+            name: linux-x86_64
+          - os: macos-latest
+            target: aarch64-apple-darwin
+            name: macos-aarch64
+    runs-on: ${{ matrix.platform.os }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions-rust-lang/setup-rust-toolchain@v1
+        with:
+          target: ${{ matrix.platform.target }}
+
+      - uses: actions/cache@v4
+        with:
+          path: ~/.cargo/registry
+          key: ${{ runner.os }}-cargo-registry-${{ hashFiles('**/Cargo.lock') }}
+
+      - uses: actions/cache@v4
+        with:
+          path: ~/.cargo/git
+          key: ${{ runner.os }}-cargo-git-${{ hashFiles('**/Cargo.lock') }}
+
+      - uses: actions/cache@v4
+        with:
+          path: target
+          key: ${{ runner.os }}-${{ matrix.platform.target }}-cargo-build-target-${{ hashFiles('**/Cargo.lock') }}
+
+      - name: Build
+        run: cargo build --release --locked --target ${{ matrix.platform.target }}
+
+      - name: Strip binary
+        run: strip target/${{ matrix.platform.target }}/release/rtpl
+
+      - name: Package
+        run: |
+          cd target/${{ matrix.platform.target }}/release
+          chmod +x rtpl
+          tar -czf rtpl-${{ github.ref_name }}-${{ matrix.platform.name }}.tar.gz rtpl
+          mv rtpl-${{ github.ref_name }}-${{ matrix.platform.name }}.tar.gz $GITHUB_WORKSPACE/
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: rtpl-${{ matrix.platform.name }}
+          path: rtpl-${{ github.ref_name }}-${{ matrix.platform.name }}.tar.gz
+          if-no-files-found: error
+
+  release:
+    name: Create Release
+    needs: [build]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          path: artifacts
+          merge-multiple: true
+
+      - uses: softprops/action-gh-release@v2
+        with:
+          files: artifacts/*
+          draft: false
+          prerelease: false
+          generate_release_notes: true
+          fail_on_unmatched_files: true

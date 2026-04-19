@@ -21,10 +21,10 @@ jobs:
         platform:
           - os: ubuntu-latest
             target: x86_64-unknown-linux-gnu
-            name: linux-x86_64
+            asset: rtpl-linux-x86_64
           - os: macos-latest
             target: aarch64-apple-darwin
-            name: macos-aarch64
+            asset: rtpl-macos-aarch64
     runs-on: ${{ matrix.platform.os }}
     steps:
       - uses: actions/checkout@v4
@@ -51,36 +51,12 @@ jobs:
       - name: Build
         run: cargo build --release --locked --target ${{ matrix.platform.target }}
 
-      - name: Strip binary
-        run: strip target/${{ matrix.platform.target }}/release/rtpl
-
-      - name: Package
+      - name: Prepare asset
         run: |
-          cd target/${{ matrix.platform.target }}/release
-          chmod +x rtpl
-          tar -czf rtpl-${{ github.ref_name }}-${{ matrix.platform.name }}.tar.gz rtpl
-          mv rtpl-${{ github.ref_name }}-${{ matrix.platform.name }}.tar.gz $GITHUB_WORKSPACE/
-
-      - uses: actions/upload-artifact@v4
-        with:
-          name: rtpl-${{ matrix.platform.name }}
-          path: rtpl-${{ github.ref_name }}-${{ matrix.platform.name }}.tar.gz
-          if-no-files-found: error
-
-  release:
-    name: Create Release
-    needs: [build]
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/download-artifact@v4
-        with:
-          path: artifacts
-          merge-multiple: true
+          strip target/${{ matrix.platform.target }}/release/rtpl
+          cp target/${{ matrix.platform.target }}/release/rtpl ${{ matrix.platform.asset }}
 
       - uses: softprops/action-gh-release@v2
         with:
-          files: artifacts/*
-          draft: false
-          prerelease: false
+          files: ${{ matrix.platform.asset }}
           generate_release_notes: true
-          fail_on_unmatched_files: true
